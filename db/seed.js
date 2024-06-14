@@ -4,6 +4,8 @@ import User from '../models/user.js';
 import Genre from "../models/genre.js"
 import { dbURI } from '../config/environment.js'
 import genresData from './data/genres.js';
+import Game from '../models/game.js';
+import gameGenreMapping from './data/gameGenreMapping.js';
 
 async function seed() {
     await mongoose.connect(dbURI)
@@ -17,14 +19,31 @@ async function seed() {
         email: "admin@admin.com",
         isAdmin: true
     })
+    console.log("user created");
 
     const genres = await Genre.create(genresData)
+    console.log("genres created");
 
-    gamesData.forEach((game) => {
-        game.addedBy = user._id
-    })
+    // uses reduce to provide the specific id for each genre name 
+    const genreMap = genres.reduce((acc, genre) => {
+        acc[genre.name] = genre._id;
+        return acc;
+    }, {});
 
-    console.log(gamesData)
+
+    // foreach through the game data to set the array of genres with their respective ids.
+    gamesData.forEach(game => {
+        game.addedBy = user._id;
+        const genreNames = gameGenreMapping[game.name] || [];
+        game.genres = genreNames.map(name => genreMap[name]).filter(Boolean);
+    });
+
+    // console.log(gamesData);
+
+    const games = await Game.create(gamesData)
+
+    console.log('games created');
+
 
     mongoose.disconnect()
     console.log("Disconnected!")

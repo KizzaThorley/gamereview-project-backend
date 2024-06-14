@@ -7,7 +7,7 @@ export default [
 
 },
 {
-    name: "Call of Duty Mw3",
+    name: "call of duty mw3",
     year: 2023,
     genres: [],
     imageUrl: "https://www.callofduty.com/content/dam/atvi/callofduty/cod-touchui/blog/hero/mwiii/MWIII-REVEAL-FULL-TOUT.jpg",
@@ -42,7 +42,7 @@ export default [
 
 },
 {
-    name: 'red dead redemption 2',
+    name: "red dead redemption 2",
     year: 2018,
     genres: [],
     imageUrl: "https://sm.ign.com/t/ign_za/review/r/red-dead-r/red-dead-redemption-2-review_rrar.1200.jpg",
