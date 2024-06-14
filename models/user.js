@@ -9,7 +9,7 @@ const match = [emailRegex, "Your email address must contain '@'"]
 
 const userSchema = new mongoose.Schema({
     username: {type: String, required: true, minLength: [5, "Username must be at least 5 characters long."], maxLength: [25, "Username cannot be longer than 25 characters."], unique: [true, "The username {VALUE} is taken."], trim: true},
-    email: {type: String, required: true, unique: true, match: match},
+    email: {type: String, required: true, unique: true, match: match, trim: true},
     password: {type: String, required: true},
     isAdmin: {type: Boolean, required: true, default: false}
 })
