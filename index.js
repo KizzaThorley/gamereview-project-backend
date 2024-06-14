@@ -1,0 +1,29 @@
+import express from 'express'
+import mongoose from 'mongoose'
+
+import { port, dbURI } from './config/environment.js'
+import gamesController from './controllers/games.js'
+import authController from './controllers/auth.js'
+
+const app = express()
+
+app.use(express.json())
+
+app.use('/app', authController)
+
+app.use('/app', gamesController)
+
+
+
+await mongoose.connect(dbURI)
+
+
+
+async function startApp() {
+   await mongoose.connect(dbURI)
+  console.log('🤖 Successfully connected to mongo!')
+
+  app.listen(port, () => console.log(`🤖 Up and running on port ${port}`))
+}
+
+startApp()
