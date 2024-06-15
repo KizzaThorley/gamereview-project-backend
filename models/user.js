@@ -5,11 +5,11 @@ import bcrypt from "bcrypt"
 
 const hidden = mongooseHidden({ defaultHidden: { password: true } })
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const match = [emailRegex, "Your email address must contain '@'"]
+const match = [emailRegex, "Your email address must be a valid email for example containing '@' and '.com'"]
 
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, minLength: [5, "Username must be at least 5 characters long."], maxLength: [25, "Username cannot be longer than 25 characters."], unique: [true, "The username {VALUE} is taken."], trim: true },
-    email: { type: String, required: true, unique: true, match: match, trim: true },
+    email: { type: String, required: true, unique: [true, "The username or email is taken."], match: match, trim: true },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, required: true, default: false }
 })

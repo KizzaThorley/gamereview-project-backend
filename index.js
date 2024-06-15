@@ -1,6 +1,8 @@
 import express from 'express'
 import mongoose from 'mongoose'
 
+import path, { dirname } from 'path';
+
 import { port, dbURI } from './config/environment.js'
 import gamesController from './controllers/games.js'
 import authController from './controllers/auth.js'
@@ -9,9 +11,9 @@ const app = express()
 
 app.use(express.json())
 
-app.use('/app', authController)
+app.use('/api', authController)
 
-app.use('/app', gamesController)
+app.use('/api', gamesController)
 
 
 
