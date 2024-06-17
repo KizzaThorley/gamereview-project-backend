@@ -3,13 +3,14 @@ import User from '../models/user.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { secret } from '../config/environment.js'
+import { PasswordTooWeak, PasswordsNotMatching, Unauthorized } from '../lib/errors.js'
 
 const router = express.Router()
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', async (req, res, next) => {
     try {
         if (req.body.password !== req.body.passwordConfirmation) {
-            throw new Error('passwords dont match')
+            throw new PasswordsNotMatching()
         }
 
         const passwordStrength = /^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/.test(req.body.password)
@@ -17,11 +18,7 @@ router.post('/signup', async (req, res) => {
         console.log(passwordStrength);
 
         if (!passwordStrength) {
-            throw new Error('Your Password need to have a captial be 8 characters long with a special character')
-        }
-
-        if (!req.body.email) {
-            throw new Error('an email is required')
+            throw new PasswordTooWeak()
         }
 
         const user = await User.create(req.body)
@@ -32,17 +29,17 @@ router.post('/signup', async (req, res) => {
         })
 
     } catch (error) {
-        res.send(error.message)
+        next(error)
     }
 })
 
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
     try {
         const user = await User.findOne({ email: req.body.email })
 
         if (!user) {
-            throw new Error("Unauthorized")
+            throw new Unauthorized()
         }
 
         const passwordCheck = await bcrypt.compare(
@@ -50,7 +47,7 @@ router.post('/login', async (req, res) => {
             user.password
         )
         if (!passwordCheck) {
-            throw new Error("Unauthorized")
+            throw new Unauthorized()
         }
 
         const token = jwt.sign(
@@ -70,7 +67,7 @@ router.post('/login', async (req, res) => {
         })
 
     } catch (error) {
-        res.send(error.message)
+        next(error)
     }
 })
 

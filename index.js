@@ -3,17 +3,25 @@ import mongoose from 'mongoose'
 
 import path, { dirname } from 'path';
 
+import logger from './middleware/logger.js';
 import { port, dbURI } from './config/environment.js'
 import gamesController from './controllers/games.js'
 import authController from './controllers/auth.js'
+import errorHandler from './middleware/errorHandler.js';
 
 const app = express()
 
+// middleware for absolute paths to data as well as file names to be implemented
+
 app.use(express.json())
+
+app.use("/", logger)
 
 app.use('/api', authController)
 
 app.use('/api', gamesController)
+
+app.use(errorHandler)
 
 
 
