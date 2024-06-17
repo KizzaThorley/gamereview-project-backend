@@ -14,8 +14,8 @@ router.post('/signup', async (req, res, next) => {
         }
 
         const passwordStrength = /^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/.test(req.body.password)
-        console.log(req.body.password);
-        console.log(passwordStrength);
+        // console.log(req.body.password);
+        // console.log(passwordStrength);
 
         if (!passwordStrength) {
             throw new PasswordTooWeak()
