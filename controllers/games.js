@@ -32,17 +32,13 @@ router.post("/games", secureRoute, async (req, res, next) => {
 
 
         const genreIds = await Promise.all(req.body.genres.map( async (genre) => {
-            try {
                 const fullGenre = await Genre.findOne({name: genre.toLocaleLowerCase()})
                 if (!fullGenre) {
                     throw new GenreNotFound()
                 }
                 return fullGenre
-            } catch (error) {
-                next(error)
-            }
         }));
-        
+
         console.log(genreIds)
         req.body.genres = genreIds
        
