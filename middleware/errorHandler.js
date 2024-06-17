@@ -38,6 +38,10 @@ export default function errorHandler(err, req, res, next) {
     if (err.name === "GenreNotFound") {
       return res.status(401).json({message: "This genre does not exist."})
     }
+
+    if (err.name === "CantReviewTwice") {
+      return res.status(401).json({message: "You can't review the same game twice."})
+    }
   
     res.sendStatus(500)
     next(err)

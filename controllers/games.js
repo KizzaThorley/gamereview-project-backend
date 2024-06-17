@@ -3,7 +3,7 @@ import Game from '../models/game.js'
 import Genre from '../models/genre.js'
 import secureRoute from '../middleware/secureRoute.js'
 import User from '../models/user.js'
-import { ExistingGame, GenreNotFound, NotFound, Unauthorized } from '../lib/errors.js'
+import { ExistingGame, GenreNotFound, NotFound, Unauthorized, CantReviewTwice } from '../lib/errors.js'
 import genre from '../models/genre.js'
 
 const router = express.Router()
@@ -86,7 +86,7 @@ router.put('/games/:gameId', secureRoute, async (req, res, next) => {
 
 
         if (!gameToUpdate) throw new NotFound()
-            const currentUser = await User.findById(res.locals.currentUser._id.toString())
+        const currentUser = await User.findById(res.locals.currentUser._id.toString())
 
         if (currentUser.isAdmin) {
             await gameToDelete.deleteOne()
@@ -117,6 +117,33 @@ router.put('/games/:gameId', secureRoute, async (req, res, next) => {
 
 })
 
+
+router.post('/game/review/:gameId/', secureRoute, async (req, res, next) => {
+
+    try {
+        const gameToReview = await Game.findById(req.params.gameId)
+        console.log(gameToReview);
+        req.body.addedBy = res.locals.currentUser._id
+
+        if (gameToReview.reviews.length > 0) {
+            gameToReview.reviews.forEach((review) => {
+                if (review.addedBy.equals(res.locals.currentUser._id)) throw new CantReviewTwice()
+            }
+            )
+        }
+
+        gameToReview.reviews.push(req.body)
+
+        await gameToReview.save()
+
+
+        return res.status(202).json(gameToReview)
+
+    } catch (error) {
+        next(error)
+    }
+
+})
 
 
 export default router
