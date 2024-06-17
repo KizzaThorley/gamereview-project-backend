@@ -39,6 +39,7 @@ async function seed() {
     });
 
     // console.log(gamesData);
+   
 
     const games = await Game.create(gamesData)
 
