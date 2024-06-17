@@ -40,11 +40,7 @@ async function seed() {
 
     // console.log(gamesData);
    
-
     const games = await Game.create(gamesData)
-
-    console.log('games created');
-
 
     mongoose.disconnect()
     console.log("Disconnected!")

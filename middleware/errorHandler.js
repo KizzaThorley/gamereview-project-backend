@@ -30,6 +30,14 @@ export default function errorHandler(err, req, res, next) {
     if (err.name === "Unauthorized") {
         return res.status(401).json({message: "You are not authorised."})
     }
+
+    if (err.name === "ExistingGame") {
+      return res.status(401).json({message: "This game already exists."})
+    }
+
+    if (err.name === "GenreNotFound") {
+      return res.status(401).json({message: "This genre does not exist."})
+    }
   
     res.sendStatus(500)
     next(err)
