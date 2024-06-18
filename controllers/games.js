@@ -164,11 +164,48 @@ router.put('/games/:gameId/reviews/:reviewId', secureRoute, async (req, res, nex
         const gameToReview = await Game.findById(req.params.gameId)
         const review = gameToReview.reviews.id(req.params.reviewId)
         
+        if (!review.addedBy.equals(res.locals.currentUser._id)) throw new Unauthorized()
+        
+
         Object.assign(review, req.body)
 
         await gameToReview.save()
 
         return res.status(202).json(review)
+
+    } catch (error) {
+        next(error)
+    }
+
+})
+
+router.delete('/games/:gameId/reviews-delete/:reviewId', secureRoute, async (req, res, next) => {
+
+
+    try {
+
+        const gameToReview = await Game.findById(req.params.gameId)
+        const review = gameToReview.reviews.id(req.params.reviewId)
+
+
+        if (!gameToReview) throw new NotFound()
+
+        if (!review) throw new NotFound()
+
+        const currentUser = await User.findById(res.locals.currentUser._id.toString())
+
+        if (currentUser.isAdmin || review.addedBy.equals(res.locals.currentUser._id)) {
+
+            review.deleteOne()
+
+        } else {
+            throw new Unauthorized()
+        }
+
+
+        await gameToReview.save()
+
+        return res.status(202).json(gameToReview)
 
     } catch (error) {
         next(error)
