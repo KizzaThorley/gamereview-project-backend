@@ -118,7 +118,7 @@ router.put('/games/:gameId', secureRoute, async (req, res, next) => {
 })
 
 
-router.post('/game/review/:gameId/', secureRoute, async (req, res, next) => {
+router.post('/games/:gameId/review', secureRoute, async (req, res, next) => {
 
     try {
         const gameToReview = await Game.findById(req.params.gameId)
