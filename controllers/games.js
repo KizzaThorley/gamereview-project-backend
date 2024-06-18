@@ -89,8 +89,8 @@ router.put('/games/:gameId', secureRoute, async (req, res, next) => {
         const currentUser = await User.findById(res.locals.currentUser._id.toString())
 
         if (currentUser.isAdmin) {
-            await gameToDelete.deleteOne()
-            return res.status(204).end()
+            await gameToUpdate.save();
+            return res.status(202).json(gameToUpdate)
         }
         if (!gameToUpdate.addedBy.equals(res.locals.currentUser._id)) {
             throw new Unauthorized()
