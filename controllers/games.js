@@ -54,6 +54,19 @@ router.post("/games", secureRoute, async (req, res, next) => {
 })
 
 
+router.get("/games/:gameId", async (req, res, next) => {
+    try {
+        const gameToShow = await Game.findById(req.params.gameId).populate("genres")
+        if (!gameToShow) throw new NotFound()
+
+        return res.status(200).json(gameToShow)
+
+    } catch (error) {
+        next(error)
+    }
+})
+
+
 router.delete('/games/:gameId', secureRoute, async (req, res, next) => {
     console.log(res.locals.currentUser._id);
     try {
@@ -118,7 +131,7 @@ router.put('/games/:gameId', secureRoute, async (req, res, next) => {
 })
 
 
-router.post('/games/:gameId/review', secureRoute, async (req, res, next) => {
+router.post('/games/:gameId/reviews', secureRoute, async (req, res, next) => {
 
     try {
         const gameToReview = await Game.findById(req.params.gameId)
@@ -138,6 +151,24 @@ router.post('/games/:gameId/review', secureRoute, async (req, res, next) => {
 
 
         return res.status(202).json(gameToReview)
+
+    } catch (error) {
+        next(error)
+    }
+
+})
+
+router.put('/games/:gameId/reviews/:reviewId', secureRoute, async (req, res, next) => {
+
+    try {
+        const gameToReview = await Game.findById(req.params.gameId)
+        const review = gameToReview.reviews.id(req.params.reviewId)
+        
+        Object.assign(review, req.body)
+
+        await gameToReview.save()
+
+        return res.status(202).json(review)
 
     } catch (error) {
         next(error)
