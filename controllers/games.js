@@ -179,7 +179,7 @@ router.put('/games/:gameId/reviews/:reviewId', secureRoute, async (req, res, nex
 
 })
 
-router.delete('/games/:gameId/reviews-delete/:reviewId', secureRoute, async (req, res, next) => {
+router.delete('/games/:gameId/reviews/:reviewId/delete', secureRoute, async (req, res, next) => {
 
 
     try {
