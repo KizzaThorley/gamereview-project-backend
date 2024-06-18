@@ -5,6 +5,7 @@ import secureRoute from '../middleware/secureRoute.js'
 import User from '../models/user.js'
 import { ExistingGame, GenreNotFound, NotFound, Unauthorized, CantReviewTwice } from '../lib/errors.js'
 import genre from '../models/genre.js'
+import game from '../models/game.js'
 
 const router = express.Router()
 
@@ -13,7 +14,27 @@ router.get('/games', async (req, res, next) => {
 
 
         const games = await Game.find().populate("genres")
-        res.send(games)
+        res.status(200).json(games)
+
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.get('/my-games', secureRoute, async (req, res, next) => {
+    try {
+
+
+        const games = await Game.find().populate("genres")
+
+        const filteredGames = games.filter((game) => {
+            if (game.addedBy.equals(res.locals.currentUser._id)) return true 
+        })
+        if(filteredGames.length === 0) {
+         res.send('No games have been added by you')
+        }
+
+        res.status(200).json(filteredGames)
 
     } catch (error) {
         next(error)
@@ -163,9 +184,9 @@ router.put('/games/:gameId/reviews/:reviewId', secureRoute, async (req, res, nex
     try {
         const gameToReview = await Game.findById(req.params.gameId)
         const review = gameToReview.reviews.id(req.params.reviewId)
-        
+
         if (!review.addedBy.equals(res.locals.currentUser._id)) throw new Unauthorized()
-        
+
 
         Object.assign(review, req.body)
 
