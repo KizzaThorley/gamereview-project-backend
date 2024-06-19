@@ -5,7 +5,7 @@ import secureRoute from '../middleware/secureRoute.js'
 import User from '../models/user.js'
 import { ExistingGame, GenreNotFound, NotFound, Unauthorized, CantReviewTwice } from '../lib/errors.js'
 import genre from '../models/genre.js'
-import game from '../models/game.js'
+
 
 const router = express.Router()
 
@@ -30,9 +30,9 @@ router.get('/my-games', secureRoute, async (req, res, next) => {
         const filteredGames = games.filter((game) => {
             if (game.addedBy.equals(res.locals.currentUser._id)) return true 
         })
-        if(filteredGames.length === 0) {
-         res.send('No games have been added by you')
-        }
+        // if(filteredGames.length === 0) {
+    
+        // }
 
         res.status(200).json(filteredGames)
 
@@ -234,5 +234,17 @@ router.delete('/games/:gameId/reviews/:reviewId/delete', secureRoute, async (req
 
 })
 
+
+router.get('/genres', async (req, res, next) => {
+    try {
+
+        const genres = await Genre.find()
+        // console.log(genres);
+        res.status(200).json(genres)
+
+    } catch (error) {
+        next(error)
+    }
+})
 
 export default router
