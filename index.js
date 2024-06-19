@@ -8,6 +8,7 @@ import { port, dbURI } from './config/environment.js'
 import gamesController from './controllers/games.js'
 import authController from './controllers/auth.js'
 import errorHandler from './middleware/errorHandler.js';
+import { NotFound } from './lib/errors.js';
 
 const app = express()
 
@@ -35,5 +36,11 @@ async function startApp() {
 
   app.listen(port, () => console.log(`🤖 Up and running on port ${port}`))
 }
+
+
+app.get('*', function (req, res) {
+  res.status(404).json("404 error route not found")
+});
+
 
 startApp()
