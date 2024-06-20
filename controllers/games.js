@@ -3,7 +3,7 @@ import Game from '../models/game.js'
 import Genre from '../models/genre.js'
 import secureRoute from '../middleware/secureRoute.js'
 import User from '../models/user.js'
-import { ExistingGame, GenreNotFound, NotFound, Unauthorized, CantReviewTwice } from '../lib/errors.js'
+import { ExistingGame, GenreNotFound, NotFound, Unauthorized, CantReviewTwice, Required } from '../lib/errors.js'
 import genre from '../models/genre.js'
 
 
@@ -163,6 +163,10 @@ router.post('/games/:gameId/reviews', secureRoute, async (req, res, next) => {
             }
             )
         }
+
+        if (req.body.review.trim() === '') {
+            throw new Required()
+        } 
 
         gameToReview.reviews.push(req.body)
 

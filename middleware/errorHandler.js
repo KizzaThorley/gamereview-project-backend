@@ -42,6 +42,10 @@ export default function errorHandler(err, req, res, next) {
     if (err.name === "CantReviewTwice") {
       return res.status(401).json({message: "You can't review the same game twice."})
     }
+
+    if (err.name === "Required") {
+      return res.status(401).json({message: "Please fill in all required fields"})
+    }
   
     res.sendStatus(500)
     next(err)
