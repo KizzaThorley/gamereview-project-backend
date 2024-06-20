@@ -164,7 +164,7 @@ router.post('/games/:gameId/reviews', secureRoute, async (req, res, next) => {
             )
         }
 
-        if (req.body.review.trim() === '') {
+        if (req.body.review.trim() === '' || req.body.rating === 0) {
             throw new Required()
         } 
 
