@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import gamesData from './data/games.js'
 import User from '../models/user.js';
 import Genre from "../models/genre.js"
-import { dbURI } from '../config/environment.js'
+import { adminPassword, dbURI } from '../config/environment.js'
 import genresData from './data/genres.js';
 import Game from '../models/game.js';
 import gameGenreMapping from './data/gameGenreMapping.js';
@@ -15,7 +15,7 @@ async function seed() {
 
     const user = await User.create({
         username: "admin",
-        password: "admin",
+        password: adminPassword,
         email: "admin@admin.com",
         isAdmin: true
     })
