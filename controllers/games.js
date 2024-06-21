@@ -154,7 +154,7 @@ router.put('/games/:gameId', secureRoute, async (req, res, next) => {
 router.post('/games/:gameId/reviews', secureRoute, async (req, res, next) => {
 
     try {
-        const gameToReview = await Game.findById(req.params.gameId)
+        const gameToReview = await Game.findById(req.params.gameId).populate("genres")
         console.log(gameToReview);
         req.body.addedBy = res.locals.currentUser._id
 
