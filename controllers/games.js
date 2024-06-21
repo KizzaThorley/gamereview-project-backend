@@ -78,6 +78,7 @@ router.post("/games", secureRoute, async (req, res, next) => {
 router.get("/games/:gameId", async (req, res, next) => {
     try {
         const gameToShow = await Game.findById(req.params.gameId).populate("genres")
+
         if (!gameToShow) throw new NotFound()
 
         return res.status(200).json(gameToShow)
@@ -117,7 +118,7 @@ router.delete('/games/:gameId', secureRoute, async (req, res, next) => {
 router.put('/games/:gameId', secureRoute, async (req, res, next) => {
     try {
       
-        const gameToUpdate = await Game.findById(req.params.gameId)
+        const gameToUpdate = await Game.findById(req.params.gameId).populate("genres")
     
 
         if (!gameToUpdate) throw new NotFound()
@@ -184,7 +185,7 @@ router.post('/games/:gameId/reviews', secureRoute, async (req, res, next) => {
 router.put('/games/:gameId/reviews/:reviewId', secureRoute, async (req, res, next) => {
 
     try {
-        const gameToReview = await Game.findById(req.params.gameId)
+        const gameToReview = await Game.findById(req.params.gameId).populate("genres")
         const review = gameToReview.reviews.id(req.params.reviewId)
 
         if (!review.addedBy.equals(res.locals.currentUser._id)) throw new Unauthorized()
@@ -194,7 +195,7 @@ router.put('/games/:gameId/reviews/:reviewId', secureRoute, async (req, res, nex
 
         await gameToReview.save()
 
-        return res.status(202).json(review)
+        return res.status(202).json(gameToReview)
 
     } catch (error) {
         next(error)
@@ -207,7 +208,7 @@ router.delete('/games/:gameId/reviews/:reviewId/delete', secureRoute, async (req
 
     try {
 
-        const gameToReview = await Game.findById(req.params.gameId)
+        const gameToReview = await Game.findById(req.params.gameId).populate("genres")
         const review = gameToReview.reviews.id(req.params.reviewId)
 
 
